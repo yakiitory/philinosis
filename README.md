@@ -33,18 +33,18 @@ A simple profanity checking Discord bot written in Python, using the Hikari API.
    ```
 3. **Install Dependencies:**
   ```bash
-  pip install -r requirements.txt
+     pip install -r requirements.txt
   ```
 
 4. **Environment Configuration:**
 Create a `.env` file in the root directory and add your Discord bot token:
-```DISCORD_TOKEN=your_discord_bot_token_here```
+   ```DISCORD_TOKEN=your_discord_bot_token_here```
 
 5. **Run the bot:**
 At the root directory, run:
-```bash
-  python src/project.py
-```
+   ```bash
+     python src/project.py
+   ```
    
 ## Project Structure
 - `backend/models.py`: Contains data classes defining the `User` and `Guild` objects.
