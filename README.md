@@ -55,7 +55,7 @@ In the `backend/` directory, all database and core logic-related code are stored
 * `lists.py` defines the localized storage module for the `FILIPINO_SWEAR_WORDS` dictionary dataset. It is merely used to cleanly isolate the raw lists of target profanities from the complex application logic to allow for effortless vocabulary updates.
 * `moderation.py` defines the chat filtering implementation by compiling advanced regular expression patterns derived from the swear word dataset. It makes use of the `count_profanity` function to evaluate incoming message strings to detect exact matches, common variations, and sneaky bypass attempts.
 
-In the `src/` directory, the main Discord bot execution code is stored. The directory stores as follows:
+In the `root` directory, the main Discord bot execution code is stored. The directory stores as follows:
 
 * `project.py` defines the main entry point, which initializes the asynchronous Hikari gateway bot and establishes the live websocket connection to Discord. It makes use of `GuildMessageCreateEvent` triggers to orchestrate the entire lifecycle of a message by passing the text to the moderation layer and dispatching the bot's public call-out responses.
 * `test_project.py` defines the Pytest test fixtures as well as the unit tests for the repositories and respective operations done on the database.
