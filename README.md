@@ -1,6 +1,6 @@
 # philinosis
 
-#### VIDEO DEMO:
+#### VIDEO DEMO: [Link](https://youtu.be/sNyf6fCDuRA)
 
 #### Description:
 A simple profanity checking Discord bot written in Python, using the Hikari API. It can be added to a server to which it should start counting the profanity said by a user, with an emphasis on counting profanity in the Filipino language. Entries and data is persisted in a local SQLite database.
@@ -47,10 +47,15 @@ At the root directory, run:
    ```
    
 ## Project Structure
-- `backend/models.py`: Contains data classes defining the `User` and `Guild` objects.
-- `backend/database.py`: Manages the SQLite database connection, transaction handling, and automated schema initialization (using an external `schema.sql`).
-- `backend/repositories.py`: Contains the `BaseRepository` and `UserRepository` that handle data access, user creation, and swear count database updates.
-- `backend/lists.py`: Stores the `FILIPINO_SWEAR_WORDS` set containing the dictionary of profanities.
-- `backend/moderation.py`: Compiles regex patterns from the swear word list and provides the `count_profanity` function to evaluate incoming messages.
-- `project.py`: Initializes the Hikari gateway bot, listens for `GuildMessageCreateEvent`, and orchestrates the user tracking and moderation responses.
-- `tests/`: Contains pytest fixtures (like the isolated SQLite database connection) and unit tests for database interactions, user creation logic, and swear count increments.
+In the `backend/` directory, all database and core logic-related code are stored and is imported by the main project source files. The directory stores as follows:
+
+* `models.py` defines the data classes for the `User` and `Guild` objects. It establishes a predictable structure for the state and data flowing between the underlying database and the Discord API layer.
+* `database.py` defines the core database management engine used in the program. It automatically executes an external `schema.sql` file using `sqlparse` to seamlessly initialize the database structure. It makes use of `sqlite3.Row` to return records as Python dictionaries, enforces foreign key constraints, and guarantees safe resource management through strict `try/finally` blocks to prevent database locks.
+* `repositories.py` defines the implementation of the Repository Design Pattern to cleanly separate the bot's business logic from raw database operations. It makes use of a `BaseRepository` that dynamically constructs safe, parameterized queries, and a `UserRepository` that empowers lazy user registration and utilizes atomic SQL updates for accurate swear counters.
+* `lists.py` defines the localized storage module for the `FILIPINO_SWEAR_WORDS` dictionary dataset. It is merely used to cleanly isolate the raw lists of target profanities from the complex application logic to allow for effortless vocabulary updates.
+* `moderation.py` defines the chat filtering implementation by compiling advanced regular expression patterns derived from the swear word dataset. It makes use of the `count_profanity` function to evaluate incoming message strings to detect exact matches, common variations, and sneaky bypass attempts.
+
+In the `src/` directory, the main Discord bot execution code is stored. The directory stores as follows:
+
+* `project.py` defines the main entry point, which initializes the asynchronous Hikari gateway bot and establishes the live websocket connection to Discord. It makes use of `GuildMessageCreateEvent` triggers to orchestrate the entire lifecycle of a message by passing the text to the moderation layer and dispatching the bot's public call-out responses.
+* `test_project.py` defines the Pytest test fixtures as well as the unit tests for the repositories and respective operations done on the database.
