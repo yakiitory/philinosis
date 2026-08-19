@@ -2,9 +2,15 @@ import pytest
 import sqlite3
 from dataclasses import dataclass
 
-from backend.database import Database
-from backend.repositories import UserRepository
-from backend.models import User
+from project import (
+    should_process_message,
+    create_new_user_object,
+    format_swear_message
+)
+
+from src.backend.database import Database
+from src.backend.repositories import UserRepository
+from src.backend.models import User
 
 
 @pytest.fixture
@@ -118,3 +124,37 @@ def test_increment_swear_multiple_times(user_repo):
     user_repo.increment_swear(user_id=discord_id, n=5)
 
     assert user_repo.get_swear_count(discord_id) == 7
+
+
+def test_should_process_message():
+    # Bots should be ignored
+    assert should_process_message(is_bot=True, content="Hello") is False
+
+    # Empty messages should be ignored
+    assert should_process_message(is_bot=False, content="") is False
+    assert should_process_message(is_bot=False, content="   ") is False
+
+    # Valid user messages should be processed
+    assert should_process_message(is_bot=False, content="Hello world") is True
+
+
+def test_create_new_user_object():
+    user_id = "123456789"
+    username = "TestUser"
+    url = "https://example.com/avatar.png"
+
+    result = create_new_user_object(user_id, username, url)
+
+    # Verify it returns the correct dataclass with matching fields
+    assert isinstance(result, User)
+    assert result.discord_id == "123456789"
+    assert result.username == "TestUser"
+    assert result.profile_url == "https://example.com/avatar.png"
+
+
+def test_format_swear_message():
+    # Test standard format
+    assert format_swear_message("@User", 5) == "@User now has 5 swears."
+
+    # Test singular count and Discord-style ID mentions
+    assert format_swear_message("<@12345>", 1) == "<@12345> now has 1 swears."
