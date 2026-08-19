@@ -1,0 +1,4 @@
+sqlite3
+sqlparse
+python-dotenv
+hikari

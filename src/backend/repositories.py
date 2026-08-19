@@ -27,10 +27,8 @@ class BaseRepository:
 
         try:
             last_id = db.execute_query(query, params)
-            print(f"[{caller_name}] {table_name} record created with ID: {last_id}.")
             return True, f"{caller_name} record created!"
         except Exception as e:
-            print(f"[{caller_name} ERROR] Create failed: {e}")
             return False, f"Failed to create {caller_name.lower()} record."
 
     def _update_by_id(
@@ -51,7 +49,6 @@ class BaseRepository:
         }
 
         if not fields_to_update:
-            print(f"[{caller_name}] No valid fields provided for update.")
             return False
 
         set_clause = ", ".join(f"{field} = ?" for field in fields_to_update)
@@ -66,10 +63,8 @@ class BaseRepository:
 
         try:
             db.execute_query(query, params)
-            print(f"[{caller_name}] {table_name} ID {identifier} updated successfully.")
             return True
         except Exception as e:
-            print(f"[{caller_name} ERROR] Failed to update {table_name}: {e}")
             return False
 
 class UserRepository(BaseRepository):
@@ -108,7 +103,6 @@ class UserRepository(BaseRepository):
             (user_id,),
         )
         if existing_user is None:
-            print(f"[swearjar] creating missing user record for {user_id}")
             self.database.execute_query(
                 f"INSERT INTO {self.table_name} (discord_id, username, profile_url) VALUES (?, ?, ?)",
                 (user_id, username or f"unknown-{user_id}", profile_url or ""),
@@ -143,7 +137,6 @@ class UserRepository(BaseRepository):
         check_query = f"SELECT 1 FROM {self.swearjar_table} WHERE user_id = ?"
         check_result = self.database.fetch_one(check_query, (user_id,))
         if check_result is None:
-            print(f"[swearjar] creating entry for {user_id}")
             insert_query = f"INSERT INTO {self.swearjar_table} (user_id) VALUES (?)"
             self.database.execute_query(insert_query, (user_id,))
 
