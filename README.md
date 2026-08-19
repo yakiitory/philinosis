@@ -43,7 +43,7 @@ Create a `.env` file in the root directory and add your Discord bot token:
 5. **Run the bot:**
 At the root directory, run:
    ```bash
-     python src/project.py
+     python project.py
    ```
    
 ## Project Structure
